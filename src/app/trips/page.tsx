@@ -37,20 +37,26 @@ export default async function TripsPage() {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
             Family Trips
           </h1>
-          <Link href="/trips/new">
-            <Button>New Trip</Button>
-          </Link>
+          {session.isAdmin && (
+            <Link href="/trips/new">
+              <Button>New Trip</Button>
+            </Link>
+          )}
         </div>
 
         {allTrips.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
               <p className="text-gray-500 dark:text-gray-400 mb-4">
-                No trips yet. Create your first family trip!
+                {session.isAdmin
+                  ? "No trips yet. Create your first family trip!"
+                  : "No trips yet. Ask an admin to create one!"}
               </p>
-              <Link href="/trips/new">
-                <Button>Create Your First Trip</Button>
-              </Link>
+              {session.isAdmin && (
+                <Link href="/trips/new">
+                  <Button>Create Your First Trip</Button>
+                </Link>
+              )}
             </CardContent>
           </Card>
         ) : (

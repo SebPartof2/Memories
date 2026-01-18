@@ -23,10 +23,18 @@ export async function GET() {
   return NextResponse.json(allTrips);
 }
 
-// POST /api/trips - Create a new trip
+// POST /api/trips - Create a new trip (admin only)
 export async function POST(request: NextRequest) {
   const auth = await requireAuth();
   if ("error" in auth) return auth.error;
+
+  // Only admins can create trips
+  if (!auth.session.isAdmin) {
+    return NextResponse.json(
+      { error: "Only admins can create trips" },
+      { status: 403 }
+    );
+  }
 
   try {
     const body = await request.json();

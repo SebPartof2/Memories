@@ -5,7 +5,7 @@ import {
   getUserInfo,
 } from "@/lib/auth/oauth";
 import { createSession } from "@/lib/auth/session";
-import { db, users } from "@/lib/db";
+import { db, users, whitelist } from "@/lib/db";
 import { eq } from "drizzle-orm";
 
 export async function GET(request: NextRequest) {
@@ -52,6 +52,17 @@ export async function GET(request: NextRequest) {
     // Get user info from S-Auth
     const userInfo = await getUserInfo(tokens.access_token);
 
+    // Check if user is whitelisted
+    const whitelistEntry = await db.query.whitelist.findFirst({
+      where: eq(whitelist.email, userInfo.email.toLowerCase()),
+    });
+
+    if (!whitelistEntry) {
+      return NextResponse.redirect(
+        new URL("/?error=Access+denied.+You+are+not+on+the+whitelist.", request.url)
+      );
+    }
+
     // Create or update user in database
     const existingUser = await db.query.users.findFirst({
       where: eq(users.id, userInfo.sub),
@@ -80,11 +91,12 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Create session
+    // Create session with admin status
     await createSession({
       userId: userInfo.sub,
       email: userInfo.email,
       name: userName,
+      isAdmin: whitelistEntry.isAdmin,
       accessToken: tokens.access_token,
       refreshToken: tokens.refresh_token || null,
       expiresAt: Date.now() + tokens.expires_in * 1000,

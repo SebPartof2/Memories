@@ -7,6 +7,7 @@ export interface Session {
   userId: string;
   email: string;
   name: string | null;
+  isAdmin: boolean;
   accessToken: string;
   refreshToken: string | null;
   expiresAt: number;
@@ -132,6 +133,7 @@ export async function getClientSession(): Promise<{
   userId: string;
   email: string;
   name: string | null;
+  isAdmin: boolean;
 } | null> {
   const session = await getSession();
   if (!session) {
@@ -142,5 +144,6 @@ export async function getClientSession(): Promise<{
     userId: session.userId,
     email: session.email,
     name: session.name,
+    isAdmin: session.isAdmin,
   };
 }

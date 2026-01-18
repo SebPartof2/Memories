@@ -1,6 +1,15 @@
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 import { relations } from "drizzle-orm";
 
+// Whitelist table - controls who can access the app
+export const whitelist = sqliteTable("whitelist", {
+  email: text("email").primaryKey(),
+  isAdmin: integer("is_admin", { mode: "boolean" }).notNull().default(false),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
 // Users table - synced from S-Auth
 export const users = sqliteTable("users", {
   id: text("id").primaryKey(), // S-Auth subject ID
@@ -119,6 +128,8 @@ export const photosRelations = relations(photos, ({ one }) => ({
 }));
 
 // Type exports
+export type Whitelist = typeof whitelist.$inferSelect;
+export type NewWhitelist = typeof whitelist.$inferInsert;
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Trip = typeof trips.$inferSelect;
