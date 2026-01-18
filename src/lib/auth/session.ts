@@ -96,6 +96,11 @@ export async function getSession(): Promise<Session | null> {
     const decrypted = await decrypt(encrypted, secret);
     const session = JSON.parse(decrypted) as Session;
 
+    // Handle old sessions without isAdmin field
+    if (session.isAdmin === undefined) {
+      session.isAdmin = false;
+    }
+
     // Check if token is expired (with 60 second buffer)
     if (session.expiresAt < Date.now() + 60000) {
       // Token expired, we should refresh it
