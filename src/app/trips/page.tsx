@@ -94,7 +94,7 @@ function TripCard({
         : null;
 
   return (
-    <Link href={`/trips/${trip.id}`}>
+    <Link href={`/trips/${trip.id}`} className="block h-full">
       <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
         <div className="aspect-video bg-gradient-to-br from-blue-400 to-purple-500 relative">
           <div className="absolute inset-0 flex items-center justify-center">

@@ -151,7 +151,7 @@ function CityCard({
       : null;
 
   return (
-    <Link href={`/trips/${tripId}/cities/${city.id}`}>
+    <Link href={`/trips/${tripId}/cities/${city.id}`} className="block h-full">
       <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
         <div className="aspect-video bg-gradient-to-br from-green-400 to-teal-500 relative overflow-hidden">
           {mapImageUrl ? (
